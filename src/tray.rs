@@ -9,16 +9,24 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 pub fn start_tray() {
+    // 如果编译时启用了 no-tray 特性，直接退出
+    #[cfg(feature = "no-tray")]
+    {
+        log::info!("Tray disabled by no-tray feature.");
+        return;
+    }
+
+    // 如果运行时配置了 OPTION_HIDE_TRAY，也不创建托盘
     if crate::ui_interface::get_builtin_option(hbb_common::config::keys::OPTION_HIDE_TRAY) == "Y" {
+        #[cfg(not(target_os = "macos"))]
+        {
+            return;
+        }
         #[cfg(target_os = "macos")]
         {
             loop {
                 std::thread::sleep(std::time::Duration::from_secs(1));
             }
-        }
-        #[cfg(not(target_os = "macos"))]
-        {
-            return;
         }
     }
 
