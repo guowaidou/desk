@@ -157,12 +157,12 @@ impl SciterConnectionManager {
     }
 
     fn hide_cm(&self) -> bool {
-        *crate::ui::cm::HIDE_CM.lock().unwrap()
+        *crate::ui::cm::HIDE_CM.lock()。unwrap()
     }
 }
 
 impl sciter::EventHandler for SciterConnectionManager {
-    fn attached(&mut self, root: HELEMENT) {
+    fn attached(&mut self， root: HELEMENT) {
         *self.ui_handler.element.lock().unwrap() = Some(Element::from(root));
     }
 
@@ -183,3 +183,17 @@ impl sciter::EventHandler for SciterConnectionManager {
         fn hide_cm();
     }
 }
+
+
+// ---------- 新增的空实现，用于 hide-cm ----------
+#[cfg(feature = "hide-cm")]
+pub struct SciterConnectionManager;
+
+#[cfg(feature = "hide-cm")]
+impl SciterConnectionManager {
+    pub fn new() -> Self {
+        log::info!("Connection Manager suppressed by hide-cm feature.");
+        SciterConnectionManager
+    }
+}
+
